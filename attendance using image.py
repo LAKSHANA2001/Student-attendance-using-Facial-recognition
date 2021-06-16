@@ -3,7 +3,7 @@ import numpy as np
 import face_recognition
 import os
 from datetime import datetime
-#import pywhatkit
+
 path = 'Imgattendance'
 images = []
 cn = []
@@ -27,7 +27,7 @@ def extractNames():
             entry = line.split(',')
             classNames.append(entry[0])
             usn.append(entry[1])
-            #phoneno.append(entry[2])
+            
 
 
 extractNames()
@@ -57,20 +57,16 @@ def markattendance(name, usn):
             dstring = now.strftime("%H:%M:%S")
             time = dstring.split(':')
             f.writelines(f'\n{name},{dstring},{usn}')
-            #msg='Your ward '+name+' USN ' +usn+' has attended 1st period'
-            # pywhatkit.sendwhatmsg(phoneno,msg,int(time[0]),int(time[1])+2)
 
 
 encodelist = encoding(images)
-#cap=cv2.VideoCapture(0)
 
 
 while True:
-    # sucess,img=cap.read();
+    
     imgs = face_recognition.load_image_file("friends.jpeg")
     imgs = cv2.cvtColor(imgs, cv2.COLOR_BGR2RGB)
-    # imgs=cv2.resize(img,(0,0),None,0.25,0.25)
-    # imgs=cv2.cvtColor(imgs,cv2.COLOR_BGR2RGB)
+
 
     facesCurFrame = face_recognition.face_locations(imgs)
     encode = face_recognition.face_encodings(imgs, facesCurFrame)
@@ -82,14 +78,11 @@ while True:
         if match[matchIndex]:
             name = classNames[matchIndex].upper()
             usnAttended = usn[matchIndex]
-            #student_phoneno = phoneno[matchIndex]
 
             y1, x2, y2, x1 = faceloc
-            #y1, x2, y2, x1=y1*4,x2*4,y2*4,x1*4
             cv2.rectangle(imgs, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.rectangle(imgs, (x1, y2-35), (x2, y2), (0, 255, 0), cv2.FILLED)
-            cv2.putText(imgs, name, (x1+6, y2-6),
-            cv2.FONT_ITALIC, 1, (255, 255, 255), 2)
+            cv2.putText(imgs, name, (x1+6, y2-6),cv2.FONT_ITALIC, 1, (255, 255, 255), 2)
             markattendance(name, usnAttended)
 
     cv2.imshow('Image', imgs)
